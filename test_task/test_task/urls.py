@@ -25,7 +25,7 @@ from django.conf.urls.static import static
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Test_Task(Look_For_links)",
+      title="Test_Task(Look_For_Employee_links)",
       default_version='v1',
       description="Документация для приложения api проекта test_task",
       license=openapi.License(name="BSD License"),
@@ -42,12 +42,12 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    url(r'^api/swagger(?P<format>\.json|\.yaml)$',
-       schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    url(r'^api/swagger/$', schema_view.with_ui('swagger', cache_timeout=0),
-       name='schema-swagger-ui'),
-    url(r'^api/redoc/$', schema_view.with_ui('redoc', cache_timeout=0),
-       name='schema-redoc'),
+    url(r'^api/v1/swagger(?P<format>\.json|\.yaml)$',
+        schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    url(r'^api/v1/swagger/$', schema_view.with_ui('swagger', cache_timeout=0),
+        name='schema-swagger-ui'),
+    url(r'^api/v1/redoc/$', schema_view.with_ui('redoc', cache_timeout=0),
+        name='schema-redoc'),
 ] 
 
 if settings.DEBUG:

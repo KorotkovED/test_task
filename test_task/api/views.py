@@ -46,7 +46,11 @@ class UserViewSet(ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UsersSerializer
+<<<<<<< HEAD
     permission_classes = (permissions.IsAuthenticated,)
+=======
+    permission_classes = (permissions.IsAuthenticated,) 
+>>>>>>> 98cd46f5e62f3b649a90233d4234f56ea0e7b2e5
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DomainsFilter
 
