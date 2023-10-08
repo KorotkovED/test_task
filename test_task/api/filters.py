@@ -1,5 +1,4 @@
 from django_filters import rest_framework as filters
-from .models import Link
 from datetime import datetime
 
 class DomainsFilter(filters.FilterSet):

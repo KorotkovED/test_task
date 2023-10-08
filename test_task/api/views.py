@@ -1,5 +1,5 @@
 import re
-from .serializers import UserSerializer, LinkSerializer
+from .serializers import UsersSerializer, LinkSerializer
 from .models import User, Link
 from rest_framework import status, permissions
 from rest_framework.viewsets import ModelViewSet
@@ -35,7 +35,7 @@ class UserViewSet(ModelViewSet):
                                                 pk: [int] - id сотрудника
     """
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UsersSerializer
     permission_classes = (permissions.IsAuthenticated,) 
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DomainsFilter

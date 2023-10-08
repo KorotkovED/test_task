@@ -1,9 +1,8 @@
-from django.utils import timezone
 from rest_framework import serializers
 from .models import User, Link
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UsersSerializer(serializers.ModelSerializer):
     """
     Описание:
     ---------
