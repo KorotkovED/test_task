@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
-from .models import Link
 from datetime import datetime
+
 
 class DomainsFilter(filters.FilterSet):
     from_sec = filters.NumberFilter(method='filter_by_seconds_from_epoch')

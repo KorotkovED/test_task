@@ -1,5 +1,5 @@
 import re
-from .serializers import UserSerializer, LinkSerializer
+from .serializers import UsersSerializer, LinkSerializer
 from .models import User, Link
 from rest_framework import status, permissions
 from rest_framework.viewsets import ModelViewSet
@@ -20,29 +20,38 @@ class UserViewSet(ModelViewSet):
     Свойства:
     ---------
     queryset - коллекция объектов БД
-    serilizer_class - сериализатор, используемый для преобразования объектов в Python
-    permissions - class - список классов разрешений, которые определяют, кто имеет доступ к представлению
+    serilizer_class - сериализатор, используемый для
+                       преобразования объектов в Python
+    permissions_class - список классов разрешений, которые определяют,
+                        кто имеет доступ к представлению
 
     Дополнительные методы:
     ----------------------
-    visited_links - метод, который позволяет загрузить в БД все ссылки, на которые заходил сотрудник. Доступен только по запросу POST.
-                    Принимаемые параметры: request - экземпляр класса HttpRequest, который представляет собой HTTP-запрос от клиента к серверу.
-                                           pk: [int] - id сотрудника
+    visited_links - метод, который позволяет загрузить в БД все ссылки,
+                на которые заходил сотрудник. Доступен только по запросу POST.
+    Принимаемые параметры:
+    request - экземпляр класса HttpRequest, который представляет
+              собой HTTP-запрос от клиента к серверу.
+    pk: int - id сотрудника
 
-    visited_domains - метод, который позволяет отобразить все уникальные домены, на которые заходил сотрудник, а также при указании доп. параметров from и to в запросе к API,
-                      будут выведены все уникальные домены в указанном промежутке времени. Метод доступен только по запросу GET.
-                      Принимаемые параметры: request - экземпляр класса HttpRequest, который представляет собой HTTP-запрос от клиента к серверу.
-                                                pk: [int] - id сотрудника
+    visited_domains - метод, который позволяет отобразить все уникальные
+                      домены, на которые заходил сотрудник, а также при
+                      указании доп. параметров from и to в запросе к API,
+                      будут выведены все уникальные домены в указанном
+                      промежутке времени. Метод доступен только по запросу GET.
+    Принимаемые параметры:
+    request - экземпляр класса HttpRequest, который
+              представляет собой HTTP-запрос от клиента к серверу.
+    pk: int - id сотрудника
     """
     queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,) 
+    serializer_class = UsersSerializer
+    permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = DomainsFilter
 
-
     @action(methods=['POST'], detail=False, url_path='visited_links')
-    def visited_links(self, request, pk:[int]=None):
+    def visited_links(self, request, pk: int = None):
         """Посещенные сотрудником ссылки."""
         try:
             user = self.get_object()
@@ -52,7 +61,9 @@ class UserViewSet(ModelViewSet):
                 return Response({'status': 'BAD_REQUEST'},
                                 status=status.HTTP_400_BAD_REQUEST)
 
-            link_dicts = [{'employee': user.pk, 'links': link} for link in links_data]
+            link_dicts = [
+                {'employee': user.pk, 'links': link} for link in links_data
+                ]
 
             serializer = LinkSerializer(data=link_dicts, many=True)
 
@@ -69,9 +80,8 @@ class UserViewSet(ModelViewSet):
             return Response({'status': 'BAD_REQUEST', 'error': str(e)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-
     @action(methods=['GET'], detail=False, url_path='visited_domains')
-    def visited_domains(self, request, pk:[int]):
+    def visited_domains(self, request, pk: int):
         """Метод для получения уникальных доменов."""
         try:
             time_from = request.query_params.get('from')
@@ -80,10 +90,12 @@ class UserViewSet(ModelViewSet):
                 time_from = datetime.utcfromtimestamp(int(time_from))
                 time_to = datetime.utcfromtimestamp(int(time_to))
 
-                links = Link.objects.filter(time_transition__gte=time_from, time_transition__lte=time_to)
+                links = Link.objects.filter(
+                    time_transition__gte=time_from,
+                    time_transition__lte=time_to
+                    )
             else:
-                
-                links = Link.objects.filter(employee = pk)
+                links = Link.objects.filter(employee=pk)
 
             domain_regex = r"https?:\/\/([^\/]+)"
 
@@ -102,4 +114,5 @@ class UserViewSet(ModelViewSet):
             return Response({'domains': unique_domains,
                              'status': 'ok'}, status=status.HTTP_200_OK)
         except Link.DoesNotExist:
-            return Response({'status': 'HTTP_404_NOT_FOUND'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'status': 'HTTP_404_NOT_FOUND'},
+                            status=status.HTTP_404_NOT_FOUND)
