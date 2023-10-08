@@ -101,7 +101,7 @@ DB_PORT='5432'
 ```
 
 ## Запуск docker-container
-Выйдете из /test_task и перейдите в /infra
+Выйдите из /test_task и перейдите в /infra
 
 ```
 docker-compose up -d --build
